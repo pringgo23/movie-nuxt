@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="bg-primary text-montserrat">
+    <div class="bg-primary text-white text-montserrat">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

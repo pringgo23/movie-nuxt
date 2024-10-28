@@ -1,42 +1,79 @@
 <template>
   <div>
-    <section>
-      <h1 class="text-secondary text-3xl font-bold underline">{{ title }}</h1>
-    </section>
-
-    <section>
-      <div>
-        <!-- {{ id }} -->
-        <!-- <br /> -->
-        <!-- <input v-model="id" /> -->
-        <!-- {{ selectedGenres }}
-        {{ selectedGenresString }} -->
-
-        <div v-if="status === 'success'" class="flex gap-3">
-          <!-- --- component filter --- -->
-          <Sorting
-            v-model:sortBy="sortBy"
-            v-model:selectedGenres="selectedGenres"
-            :genres="genres"
-          ></Sorting>
-          <div class="grid grid-cols-4">
+    <div v-if="status === 'success'">
+        <section class="w-full">
             <div
-              v-for="item in data.results"
-              :key="item.id"
-              class="text-center"
+              id="slider"
+              class="flex items-center gap-x-8 mt-8 overflow-x-scroll w-full"
             >
-              <img
-                :src="`https://image.tmdb.org/t/p/w220_and_h330_face/${item.poster_path}`"
-                alt="poster"
-              />
-              {{ item.title }}
+              <div v-for="movie in movies?.results" :key="movie">
+                <CardSlider
+                  :dataMovie="movie"
+                  :key="'slider3-' + movie"
+                  :style="{
+                    transform: `translateX(${-10 * (currentSlide - 1) * 10}px)`,
+                  }"
+                />
+              </div>
             </div>
+            <div class="flex justify-center items-center">
+              <div id="dots-slider">
+                <div class="flex justify-center mt-4">
+                  <button
+                    v-for="(movie, index) in movies?.results"
+                    :key="index"
+                    :class="{
+                      'bg-orange-500 w-10': currentSlide === index,
+                      'bg-gray-400 w-3': currentSlide !== index,
+                    }"
+                    class="h-3 rounded-full mx-1 transition-colors duration-200"
+                    @click="setCurrentSlide(index)"
+                  ></button>
+                </div>
+              </div>
+            </div>
+          </section>
+          <div class="relative">
+              <div class="h-[333px] w-full bg-[#ffffff07] z-0"></div>
+    
+              <section class="-mt-52 z-1 flex justify-center items-center">
+                <div>
+                    <div class="flex justify-between">
+                        <div>
+                            <div class="h-2 w-32 bg-[#E74C3C]"></div>
+                            <p class="antialiased text-2xl">Discover Movies</p>
+                        </div>
+
+                    </div>
+                    <div class="flex">
+                      <!-- --- component filter --- -->
+                      <Sorting
+                        v-model:sortBy="sortBy"
+                        v-model:selectedGenres="selectedGenres"
+                        :genres="genres"
+                      ></Sorting>
+                      <div class="grid grid-cols-4">
+                        <div
+                          v-for="item in data.results"
+                          :key="item.id"
+                          class="text-center"
+                        >
+                          <img
+                            :src="`https://image.tmdb.org/t/p/w220_and_h330_face/${item.poster_path}`"
+                            alt="poster"
+                          />
+                          {{ item.title }}
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+              </section>
           </div>
-        </div>
-        <div v-else-if="status === 'error'" class="">Error</div>
-        <div v-else class="">Loading...</div>
-      </div>
-    </section>
+
+    </div>
+    <div v-else-if="status === 'error'" class="">Error</div>
+    <div v-else class="">Loading...</div>
   </div>
 </template>
 
@@ -51,8 +88,19 @@ const headers = {
     "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMmYwZWU5MjE3ZDgyOWI3ZGVhYTNiYTI5YTZmODEzYyIsIm5iZiI6MTcyOTk1NzE0My4wNTkyMzUsInN1YiI6IjYyNjI1MmVjMTY4ZWEzMTU1N2QzMzBkMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UVmWHMpoqD0qCekycgjftOuIQHmf6yzZceERpwWlvRs",
   Accept: "application/json",
 };
+
 const { data: genres } = await useFetch(
   "https://api.themoviedb.org/3/genre/movie/list?language=en",
+  {
+    // @ts-ignore
+    headers,
+    lazy: true,
+    server: false,
+  }
+);
+
+const { data: movies } = await useFetch(
+  "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
   {
     // @ts-ignore
     headers,
@@ -74,36 +122,21 @@ const { data, status } = await useFetch(url, {
 });
 
 const currentSlide = ref(0);
-const movies = ref([
-  {
-    title: "News of the World",
-    rating: 7.2,
-    year: 2021,
-    genre: "Drama",
-    description: "A Texan traveling across the wild West bringing the news...",
-    image: "path/to/news-of-the-world.jpg",
-  },
-  {
-    title: "Space Sweepers",
-    rating: 7.3,
-    year: 2021,
-    genre: "Sci-Fi",
-    description: "When the crew of a space junk collector ship discovers...",
-    image: "path/to/space-sweepers.jpg",
-  },
-  {
-    title: "To All the Boys: Always and Forever",
-    rating: 8.1,
-    year: 2021,
-    genre: "Drama",
-    description: "Senior year of high school takes center stage as Lara...",
-    image: "path/to/to-all-the-boys.jpg",
-  },
-]);
 
-const setCurrentSlide = (index) => {
+const setCurrentSlide = (index: number) => {
   currentSlide.value = index;
 };
 </script>
 
-<style></style>
+<style scoped>
+#slider {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* chrome */
+#slider::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+</style>
