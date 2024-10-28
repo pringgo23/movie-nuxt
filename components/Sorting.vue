@@ -49,9 +49,9 @@ interface Genre {
 
 // @ts-ignore
 const props = defineProps<{
-  selectedGenres: any;
-  sortBy: string;
-  genres: Genre;
+  selectedGenres?: any;
+  sortBy?: string;
+  genres?: Genre;
 }>();
 
 function isChecked(id: number) {
