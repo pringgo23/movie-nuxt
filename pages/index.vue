@@ -1,76 +1,83 @@
 <template>
   <div>
     <div v-if="status === 'success'">
-        <section class="w-full">
-            <div
-              id="slider"
-              class="flex items-center gap-x-8 mt-8 overflow-x-scroll w-full"
-            >
-              <div v-for="movie in movies?.results" :key="movie">
-                <CardSlider
-                  :dataMovie="movie"
-                  :key="'slider3-' + movie"
-                  :style="{
-                    transform: `translateX(${-10 * (currentSlide - 1) * 10}px)`,
-                  }"
-                />
-              </div>
-            </div>
-            <div class="flex justify-center items-center">
-              <div id="dots-slider">
-                <div class="flex justify-center mt-4">
-                  <button
-                    v-for="(movie, index) in movies?.results"
-                    :key="index"
-                    :class="{
-                      'bg-orange-500 w-10': currentSlide === index,
-                      'bg-gray-400 w-3': currentSlide !== index,
-                    }"
-                    class="h-3 rounded-full mx-1 transition-colors duration-200"
-                    @click="setCurrentSlide(index)"
-                  ></button>
-                </div>
-              </div>
-            </div>
-          </section>
-          <div class="relative">
-              <div class="h-[333px] w-full bg-[#ffffff07] z-0"></div>
-    
-              <section class="-mt-52 z-1 flex justify-center items-center">
-                <div>
-                    <div class="flex justify-between">
-                        <div>
-                            <div class="h-2 w-32 bg-[#E74C3C]"></div>
-                            <p class="antialiased text-2xl">Discover Movies</p>
-                        </div>
-
-                    </div>
-                    <div class="flex">
-                      <!-- --- component filter --- -->
-                      <Sorting
-                        v-model:sortBy="sortBy"
-                        v-model:selectedGenres="selectedGenres"
-                        :genres="genres"
-                      ></Sorting>
-                      <div class="grid grid-cols-4">
-                        <div
-                          v-for="item in data.results"
-                          :key="item.id"
-                          class="text-center"
-                        >
-                          <img
-                            :src="`https://image.tmdb.org/t/p/w220_and_h330_face/${item.poster_path}`"
-                            alt="poster"
-                          />
-                          {{ item.title }}
-                        </div>
-                      </div>
-                    </div>
-                </div>
-
-              </section>
+      <section class="w-full">
+        <div
+          id="slider"
+          class="flex items-center gap-x-8 mt-8 overflow-x-scroll w-full"
+        >
+          <div v-for="movie in movies?.results" :key="movie">
+            <CardSlider
+              :dataMovie="movie"
+              :key="'slider3-' + movie"
+              :style="{
+                transform: `translateX(${-10 * (currentSlide - 1) * 10}px)`,
+              }"
+            />
           </div>
+        </div>
+        <div class="flex justify-center items-center">
+          <div id="dots-slider">
+            <div class="flex justify-center mt-4">
+              <button
+                v-for="(movie, index) in movies?.results"
+                :key="index"
+                :class="{
+                  'bg-orange-500 w-10': currentSlide === index,
+                  'bg-gray-400 w-3': currentSlide !== index,
+                }"
+                class="h-3 rounded-full mx-1 transition-colors duration-200"
+                @click="setCurrentSlide(index)"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="relative">
+        <div class="h-[333px] w-full bg-[#ffffff07] z-0"></div>
 
+        <section class="-mt-52 z-1 flex justify-center items-center">
+          <div>
+            <div class="flex justify-between">
+              <div>
+                <div class="h-2 w-32 bg-[#E74C3C]"></div>
+                <p class="antialiased text-2xl font-semibold mt-3">
+                  Discover Movies
+                </p>
+              </div>
+
+              <div class="flex gap-2 items-center">
+                <p>my movies</p>
+                <div
+                  class="flex items-center justify-center px-4 py-2 bg-gray-800 rounded-full text-white font-medium space-x-2"
+                >
+                  <span class="text-[12px] font-semibold">2</span>
+                  <span class="text-[13px] antialiased">movies</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-8 mt-14">
+              <!-- --- component filter --- -->
+              <Sorting
+                v-model:sortBy="sortBy"
+                v-model:selectedGenres="selectedGenres"
+                :genres="genres"
+              ></Sorting>
+              <div class="grid grid-cols-4">
+                <div
+                  v-for="item in data.results"
+                  :key="item.id"
+                  class="pb-2"
+                >
+                  <BaseImageThumbnail :item="item"></BaseImageThumbnail>
+                  <p class="font-semibold">{{ item.title }}</p>
+                  <p class="antialiased text-[14px] text-[#929292]">{{ item.release_date.split("-")[0] }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
     <div v-else-if="status === 'error'" class="">Error</div>
     <div v-else class="">Loading...</div>
@@ -126,6 +133,7 @@ const currentSlide = ref(0);
 const setCurrentSlide = (index: number) => {
   currentSlide.value = index;
 };
+
 </script>
 
 <style scoped>

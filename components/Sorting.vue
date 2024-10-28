@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray-800 text-white w-64 rounded-lg shadow-md">
+  <div class="bg-gradient h-fit pb-8 text-white w-64 rounded-lg shadow-md">
     <div class="mb-6">
       <label class="block text-lg font-semibold mb-2 px-4 pt-5 pb-4">Sort Result By</label>
       <div id="border-solid" class="h-0.5 border-t border-solid border-white border-opacity-10" />
@@ -94,7 +94,7 @@ const emit = defineEmits(["update:sortby", "update:selectedGenres"]);
   line-height: 1.1rem; /* Centering the checkmark */
 }
 
-.bg-gray-800 {
+.bg-gradient {
   background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
 }
 </style>
