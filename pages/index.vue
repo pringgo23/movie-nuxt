@@ -101,7 +101,6 @@ const headers = {
   Accept: "application/json",
 };
 
-
 const url = computed(() => {
   return `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page.value}&sort_by=${sortBy.value}&with_genres=${selectedGenresString.value}`;
 });
