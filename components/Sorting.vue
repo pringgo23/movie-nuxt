@@ -95,6 +95,6 @@ const emit = defineEmits(["update:sortby", "update:selectedGenres"]);
 }
 
 .bg-gradient {
-  background: linear-gradient(to bottom, #1a1a1a, #2a2a2a);
+  background: linear-gradient(to bottom, #1a1a1a, #2a2a2a08);
 }
 </style>

@@ -57,12 +57,11 @@
               </div>
             </div>
             <div class="flex gap-8 mt-14">
-              <!-- --- component filter --- -->
               <Sorting
                 v-model:sortBy="sortBy"
                 v-model:selectedGenres="selectedGenres"
                 :genres="genres"
-              ></Sorting>
+              />
               <div class="grid grid-cols-4 gap-2">
                 <div
                   v-for="item in productsFetched"
@@ -130,6 +129,12 @@ const { data: genres } = await useFetch(
     server: false,
   }
 );
+
+setTimeout(() => {
+    console.log(genres.value, 'ini genres');
+}, 100);
+
+
 
 const { data: movies } = await useFetch(
   "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
