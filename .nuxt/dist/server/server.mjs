@@ -1,0 +1,1 @@
+export { default } from "file:///Users/lima-se/Documents/tes/tempo-tes/node_modules/@nuxt/vite-builder/dist/runtime/vite-node.mjs"
