@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-8">
     <div v-if="status === 'success'">
       <section class="w-full">
         <div
@@ -36,7 +36,7 @@
       <div class="relative">
         <div class="h-[333px] w-full bg-[#ffffff07] z-0"></div>
 
-        <section class="-mt-52 z-1 flex justify-center items-center">
+        <section class="-mt-52 z-1 flex justify-center items-center px-40">
           <div>
             <div class="flex justify-between">
               <div>
@@ -63,20 +63,23 @@
                 v-model:selectedGenres="selectedGenres"
                 :genres="genres"
               ></Sorting>
-              <div class="grid grid-cols-4">
+              <div class="grid grid-cols-4 gap-2">
                 <div
-                  v-for="item in data.results"
+                  v-for="item in productsFetched"
                   :key="item.id"
-                  class="pb-2"
+                  class="pb-3"
                 >
                   <BaseImageThumbnail :item="item"></BaseImageThumbnail>
-                  <p class="font-semibold">{{ item.title }}</p>
+                  <p class="font-semibold pr-4 pt-1">{{ item.title }}</p>
                   <p class="antialiased text-[14px] text-[#929292]">{{ item.release_date.split("-")[0] }}</p>
                 </div>
               </div>
             </div>
           </div>
         </section>
+      </div>
+      <div class="flex justify-center items-center">
+          <button class="px-8 py-1 bg-[#FF0000] rounded-full text-white font-medium" @click="page++">Load More</button>
       </div>
     </div>
     <div v-else-if="status === 'error'" class="">Error</div>
@@ -87,6 +90,8 @@
 <script setup lang="ts">
 const id = ref(null);
 const selectedGenres = ref([]);
+const page = ref(1);
+const productsFetched: any = ref([]);
 const sortBy = ref("popularity.desc");
 const selectedGenresString = computed(() => selectedGenres.value.join("%2C"));
 
@@ -95,6 +100,27 @@ const headers = {
     "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJiMmYwZWU5MjE3ZDgyOWI3ZGVhYTNiYTI5YTZmODEzYyIsIm5iZiI6MTcyOTk1NzE0My4wNTkyMzUsInN1YiI6IjYyNjI1MmVjMTY4ZWEzMTU1N2QzMzBkMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.UVmWHMpoqD0qCekycgjftOuIQHmf6yzZceERpwWlvRs",
   Accept: "application/json",
 };
+
+
+const url = computed(() => {
+  return `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page.value}&sort_by=${sortBy.value}&with_genres=${selectedGenresString.value}`;
+});
+
+const { data, status } = await useFetch(url, {
+  // @ts-ignore
+  headers,
+  lazy: true,
+  server: false,
+  watch: [selectedGenres, sortBy, page],
+  transform: (res: any) => {
+    if (page.value === 1) {
+      productsFetched.value = res.results;
+    } else {
+      productsFetched.value = [...productsFetched.value, ...res.results];
+    }
+    return productsFetched.value;
+  },
+});
 
 const { data: genres } = await useFetch(
   "https://api.themoviedb.org/3/genre/movie/list?language=en",
@@ -116,17 +142,6 @@ const { data: movies } = await useFetch(
   }
 );
 
-const url = computed(() => {
-  return `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=${sortBy.value}&with_genres=${selectedGenresString.value}`;
-});
-
-const { data, status } = await useFetch(url, {
-  // @ts-ignore
-  headers,
-  lazy: true,
-  server: false,
-  watch: [selectedGenres],
-});
 
 const currentSlide = ref(0);
 
