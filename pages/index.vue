@@ -134,8 +134,6 @@ setTimeout(() => {
     console.log(genres.value, 'ini genres');
 }, 100);
 
-
-
 const { data: movies } = await useFetch(
   "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
   {
